@@ -4,10 +4,13 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { HeaderType } from "../../utils/interfaces/HeaderType"
 import { StyledHeader } from "./headerStyle"
+import { useAuth } from "../../hooks/useAuth";
 
 const Header = (props: HeaderType) => {
     const [menu, setMenu] = useState(false)
     let location = useRouter().pathname
+    const { user, signOut } = useAuth();
+    console.log(user);
 
     location = location.includes('/shop/') ?? location.includes('/admin/') ? location.split('/')[2] : location.split('/')[1];
 
@@ -43,7 +46,7 @@ const Header = (props: HeaderType) => {
                 </ul>
 
                 <div className="header-user">
-                    <img src="https://avatars.githubusercontent.com/u/67597082?v=4" alt="user" className="header-user-image" />
+                    <img src={user?.photoURL ?? "https://avatars.githubusercontent.com/u/67597082?v=4"} alt="user" className="header-user-image" referrerPolicy="no-referrer" />
 
                     <div className="header-user-dropdown">
                         <ul className="header-user-dropdown-list">
@@ -51,7 +54,7 @@ const Header = (props: HeaderType) => {
                                 <Pencil size={20} weight="light" />
                                 <p>perfil</p>
                             </li>
-                            <li className="header-user-dropdown-item">
+                            <li className="header-user-dropdown-item" onClick={signOut}>
                                 <SignOut size={20} weight="light" />
                                 <p>sair</p>
                             </li>

@@ -6,15 +6,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "temp": "ts-node-dev ./src/lib/firebase.ts"
   },
   "dependencies": {
     "@radix-ui/react-popover": "1.0.2",
     "@stitches/react": "^1.2.8",
+    "firebase": "^9.13.0",
     "next": "12.3.1",
+    "nextjs": "^0.0.3",
     "phosphor-react": "^1.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-firebase-hooks": "^5.0.3",
+    "react-firebaseui": "^6.0.0",
     "styled-components": "^5.3.6"
   },
   "devDependencies": {

@@ -3,8 +3,9 @@ import Footer from '../components/footer/Footer'
 import Header from '../components/header/Header'
 import { StyledMain } from '../components/main/Main'
 import { UserTypes } from '../utils/enums/UserType'
+import { useAuth } from '../hooks/useAuth';
 
-const Home: React.FC = () => {
+export default function Home() {
     return (
         <>
             <Header userType={UserTypes.shop} />
@@ -17,5 +18,3 @@ const Home: React.FC = () => {
         </>
     )
 }
-
-export default Home

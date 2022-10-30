@@ -4,7 +4,7 @@ import Header from '../../components/header/Header'
 import { StyledMain } from '../../components/main/Main'
 import { UserTypes } from '../../utils/enums/UserType'
 
-const Users: React.FC = () => {
+export default function Users() {
     return (
         <>
             <Header userType={UserTypes.shop} />
@@ -17,5 +17,3 @@ const Users: React.FC = () => {
         </>
     )
 }
-
-export default Users

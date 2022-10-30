@@ -1,18 +1,16 @@
-import { Main } from 'next/document'
 import Head from 'next/head'
-import Header from '../components/header/Header'
-import { UserTypes } from '../utils/enums/UserType'
+import { useAuth } from '../hooks/useAuth';
 
-const Login: React.FC = () => {
+export default function Login() {
+    const { user, signIn } = useAuth();
+
+    console.log(user);
+
     return (
         <>
-            <Head>
-                <title>Login</title>
-            </Head>
+            <h1>Login</h1>
 
-
+            <button onClick={() => signIn()}>Sign in with Google</button>
         </>
     )
 }
-
-export default Login
