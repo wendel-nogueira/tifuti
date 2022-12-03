@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "temp": "ts-node-dev ./src/lib/firebase.ts"
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-popover": "1.0.2",
@@ -20,6 +19,7 @@
     "react-dom": "18.2.0",
     "react-firebase-hooks": "^5.0.3",
     "react-firebaseui": "^6.0.0",
+    "react-icons": "^4.6.0",
     "styled-components": "^5.3.6"
   },
   "devDependencies": {

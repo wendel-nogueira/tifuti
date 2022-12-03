@@ -14,6 +14,8 @@ const Header = (props: HeaderType) => {
 
     location = location.includes('/shop/') ?? location.includes('/admin/') ? location.split('/')[2] : location.split('/')[1];
 
+
+
     return (
         <StyledHeader>
             <h1 className="header-title">

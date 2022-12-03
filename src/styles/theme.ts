@@ -4,6 +4,8 @@ const theme = {
         background_secondary: '#FAFAFA',
         background_tertiary: '#F1F5F6',
         background_quaternary: '#0a0a0a33',
+        background_quinary: '#47A359',
+        background_senary: '#192D1D',
 
         text_primary: '#192D1D',
         text_secondary: '#37513D',

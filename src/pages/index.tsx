@@ -6,6 +6,10 @@ import { UserTypes } from '../utils/enums/UserType'
 import { useAuth } from '../hooks/useAuth';
 
 export default function Home() {
+    const { user } = useAuth();
+
+    console.log(user); // null
+    
     return (
         <>
             <Header userType={UserTypes.shop} />
