@@ -12,7 +12,7 @@ export default function Shops() {
 
     return (
         <>
-            <Header userType={UserTypes.shop} />
+            <Header userType={UserTypes.shop} title="Lojas" />
 
             <StyledMain>
                 <h1>Shops</h1>

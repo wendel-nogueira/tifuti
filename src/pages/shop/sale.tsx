@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import Footer from '../../components/footer/Footer'
 import Header from '../../components/header/Header'
 import { StyledMain } from '../../components/main/Main'
@@ -12,8 +11,8 @@ export default function Sale() {
 
     return (
         <>
-            <Header userType={UserTypes.shop} />
-
+            <Header userType={UserTypes.shop} title="Venda" />
+            
             <StyledMain>
                 <h1>Sale</h1>
             </StyledMain>

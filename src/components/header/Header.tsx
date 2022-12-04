@@ -4,7 +4,8 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { HeaderType } from "../../utils/interfaces/HeaderType"
 import { StyledHeader } from "./headerStyle"
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth"
+import Head from 'next/head'
 
 const Header = (props: HeaderType) => {
     const [menu, setMenu] = useState(false)
@@ -14,10 +15,12 @@ const Header = (props: HeaderType) => {
 
     location = location.includes('/shop/') ?? location.includes('/admin/') ? location.split('/')[2] : location.split('/')[1];
 
-
-
     return (
         <StyledHeader>
+            <Head>
+                <title>{props.title}</title>
+            </Head>
+
             <h1 className="header-title">
                 <Link href="/">tifuti</Link>
             </h1>
