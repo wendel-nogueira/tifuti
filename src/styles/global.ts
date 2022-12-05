@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import styled from 'styled-components'
 
 export default createGlobalStyle`
     * {
@@ -10,8 +9,7 @@ export default createGlobalStyle`
 
     body {
         font-family: ${ props => props.theme.fonts.secondary };
-        background-color: ${ props => props.theme.colors.background_primary };
-        color: ${ props => props.theme.colors.text_secondary };
+        background: ${ props => props.theme.colors.background_primary };
         font-size: 16px;
     }
 
@@ -28,15 +26,4 @@ export default createGlobalStyle`
     li {
         list-style: none;
     }
-`;
-
-export const Container = styled.div`
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-`;
-
-export const Section = styled.section`
-    padding: 100px 0;
 `;

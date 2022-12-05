@@ -1,13 +1,24 @@
-import { StyledFooter } from "./footerStyle"
-
-const Footer = () => {
+const PageFooter = () => {
     return (
-        <StyledFooter>
-            <a href="https://google.com" target="_blank" rel="noreferrer" className="footer-link">
-                <span role="img" aria-label="heart">❤️</span>
-            </a>
-        </StyledFooter>
+        <footer style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '50px',
+            marginTop: 'auto',
+        }}>
+            <p style={{
+                fontSize: '0.8rem',
+                color: '#999',
+            }}>
+                Desenvolvido com ❤️ por <a href="https://github.com/lavyoliveira" target={ "_blank" }>@lavyoliveira</a> e <a href="https://github.com/wendel-nogueira" target={ "_blank" }>@wendel-nogueira</a>
+            </p>
+        </footer>
     )
 }
 
-export default Footer
+export default function Footer() {
+    return (
+        <PageFooter/>
+    )
+}

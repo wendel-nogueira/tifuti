@@ -1,76 +1,209 @@
-import Link from "next/link"
-import { Pencil, SignOut, List, X } from 'phosphor-react'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { HeaderType } from "../../utils/interfaces/HeaderType"
-import { StyledHeader } from "./headerStyle"
+import { Box } from "@mui/material";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { House, Clock, Barcode, Storefront, Gauge } from 'phosphor-react';
+import styled from "styled-components";
 
-const Header = (props: HeaderType) => {
-    const [menu, setMenu] = useState(false)
-    let location = useRouter().pathname
 
-    location = location.includes('/shop/') ?? location.includes('/admin/') ? location.split('/')[2] : location.split('/')[1];
+interface HeaderProps extends React.PropsWithChildren<{}> {
+    username: string;
+    userType: string;
+    profilePicture: string;
+    page: string;
+    title: string;
+}
 
+const ListItem = ({ children, currentPage, userType }: { children: React.ReactNode, currentPage: string, userType: string }) => {
     return (
-        <StyledHeader>
-            <h1 className="header-title">
-                <Link href="/">tifuti</Link>
-            </h1>
+        <li style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '0px 16px',
+            flexGrow: 1,
+            gap: '4px',
+        }}>
+            {children}
 
-            <nav className={menu ? "header-nav active" : "header-nav"}>
-                <ul className="header-nav-list">
-                    {props.userType === "shop" ? (
-                        <>
-                            <li className={location === 'sales' ? "header-nav-item active" : "header-nav-item"}>
-                                <Link href="/shop/sales">vendas</Link>
-                            </li>
-                            <li className={location === 'inventory' ? "header-nav-item active" : "header-nav-item"}>
-                                <Link href="/shop/inventory">estoque</Link>
-                            </li>
-                        </>
-                    ) : props.userType === "admin" ? (
-                        <>
-                            <li className={location === 'shops' ? "header-nav-item active" : "header-nav-item"}>
-                                <Link href="/admin/shops">lojas</Link>
-                            </li>
-                            <li className={location === 'users' ? "header-nav-item active" : "header-nav-item"}>
-                                <Link href="/admin/users">usuarios</Link>
-                            </li>
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                </ul>
+            {
+                userType === 'shop' && (
+                    <Link page="dashboard" currentPage={currentPage}>
+                        <Gauge size={20} weight="light" />
 
-                <div className="header-user">
-                    <img src="https://avatars.githubusercontent.com/u/67597082?v=4" alt="user" className="header-user-image" />
+                        <span style={{
+                            marginLeft: '4px',
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                        }}>Dashboard</span>
+                    </Link>
+                )
+            }
 
-                    <div className="header-user-dropdown">
-                        <ul className="header-user-dropdown-list">
-                            <li className="header-user-dropdown-item">
-                                <Pencil size={20} weight="light" />
-                                <p>perfil</p>
-                            </li>
-                            <li className="header-user-dropdown-item">
-                                <SignOut size={20} weight="light" />
-                                <p>sair</p>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+            {
+                userType === 'shop' && (
+                    <Link page="products" currentPage={currentPage}>
+                        <Barcode size={20} weight="light" />
 
-                <div className="mobile-menu-icon" onClick={() => setMenu(!menu)}>
-                    <X size={24} weight="light" />
-                </div>
-            </nav>
+                        <span style={{
+                            marginLeft: '4px',
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                        }}>Produtos</span>
+                    </Link>
+                )
+            }
 
-            <div className="header-nav-background" onClick={() => setMenu(!menu)}></div>
+            {
+                userType === 'shop' && (
+                    <Link page="orders" currentPage={currentPage}>
+                        <Storefront size={20} weight="light" />
 
-            <div className="mobile-menu-icon" onClick={() => setMenu(!menu)}>
-                <List size={24} weight="light" />
-            </div>
-        </StyledHeader>
+                        <span style={{
+                            marginLeft: '4px',
+                            fontSize: '1rem',
+                            fontWeight: 500,
+                        }}>Pedidos</span>
+                    </Link>
+                )
+            }
+        </li>
     )
 }
 
-export default Header
+const Link = ({ children, page, currentPage }: { children: React.ReactNode, page: string, currentPage: string }) => {
+    const HeadLink = styled.a`
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 9px 24px;
+        color: ${page === currentPage ? '#47A359' : '#F9FAFC'};
+        border-radius: 8px;
+        transition: 0.6s;
+        background: ${page === currentPage ? 'rgba(255, 255, 255, 0.08)' : 'transparent'};
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: ${page === currentPage ? '#47A359' : '#F9FAFC'};
+        }
+    `;
+
+    return (
+        <HeadLink href={page}>
+            {children}
+        </HeadLink>
+    )
+}
+
+export default function Header(props: HeaderProps) {
+    const router = useRouter();
+    let page = router.pathname;
+    const title = props.title;
+
+    if (page.replace('/', '') !== '') {
+        page = page.replace('/', '');
+    }
+
+    return (
+        <>
+            <Head>
+                <title>{title + ' | tifuti'}</title>
+            </Head>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    minHeight: '100px',
+                    padding: '24px',
+                }}
+            >
+                <p style={{
+                    fontSize: '2rem',
+                    fontWeight: 700,
+                    color: '#47A359',
+                    fontFamily: 'Montserrat, sans-serif',
+                }}>tifuti</p>
+            </Box>
+            <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                minHeight: '100px',
+                padding: '4px 16px',
+            }}
+            >
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%',
+                    padding: '11px 24px',
+                    background: `rgba(255, 255, 255, 0.04)`,
+                    borderRadius: '8px',
+                }}>
+                    <p style={{
+                        fontSize: '1.2rem',
+                        fontWeight: 500,
+                        color: '#fff',
+                        fontFamily: 'Montserrat, sans-serif',
+                        marginBottom: '10px',
+                    }}>Olá, {props.username}</p>
+
+                    <p style={{
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                        color: 'rgb(149, 149, 150)',
+                    }}>
+                        {props.userType === 'shop' ? 'vendedor' : 'comprador'}
+                    </p>
+                </Box>
+            </Box>
+
+            <span style={{
+                width: '100%',
+                height: '1px',
+                background: `rgb(61, 65, 71)`,
+                display: 'block',
+                margin: '24px 0',
+            }}></span>
+
+            <nav>
+                <ul>
+                    <ListItem currentPage={page} userType={props.userType}>
+                        <Link page="/" currentPage={page}>
+                            <House size={20} weight="light" />
+
+                            <span style={{
+                                marginLeft: '4px',
+                                fontSize: '1rem',
+                                fontWeight: 500,
+                            }}>Home</span>
+                        </Link>
+                        <Link page="history" currentPage={page}>
+                            <Clock size={20} weight="light" />
+
+                            <span style={{
+                                marginLeft: '4px',
+                                fontSize: '1rem',
+                                fontWeight: 500,
+                            }}>Histórico</span>
+                        </Link>
+                    </ListItem>
+                </ul>
+            </nav>
+
+            <span style={{
+                width: '100%',
+                height: '1px',
+                background: `rgb(61, 65, 71)`,
+                display: 'block',
+                margin: '24px 0',
+            }}></span>
+        </>
+    )
+}

@@ -1,21 +1,276 @@
-import Head from 'next/head'
 import Footer from '../components/footer/Footer'
 import Header from '../components/header/Header'
-import { StyledMain } from '../components/main/Main'
-import { UserTypes } from '../utils/enums/UserType'
+import { useAuth } from '../hooks/useAuth';
+import Main from '../components/main/Main';
+import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Box, CircularProgress, TextField, InputLabel, FormControl, NativeSelect, Modal } from '@mui/material';
+import { useEffect, useState } from 'react';
+import firebase, { db } from "../lib/firebase";
+import { styled as muiStyled } from '@mui/material/styles';
+import { Search } from '@mui/icons-material';
 
-const Home: React.FC = () => {
+const StyledCard = muiStyled(Card)({
+    maxWidth: 240,
+    background: 'transparent',
+    position: 'relative',
+    zIndex: 1,
+    boxShadow: 'none',
+    '&:before': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        height: 'calc(100% - 70px)',
+        background: '#47A359',
+        zIndex: -1,
+        transition: 'all 0.3s ease',
+        borderRadius: '10px',
+    },
+    '&:hover': {
+        '&:before': {
+            height: '100%',
+        },
+    },
+    '& img': {
+        borderRadius: '10px',
+        objectFit: 'contain',
+    },
+});
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    minWidth: 400,
+    bgcolor: '#F9FAFC',
+    borderRadius: '8px',
+    border: 'none',
+    padding: '24px',
+    outline: 'none',
+};
+
+const Products = ({ products }) => {
+    const [selectedProduct, setSelectedProduct] = useState(null)
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedProduct(null)
+    };
+
     return (
         <>
-            <Header userType={UserTypes.shop} />
+            <Box style={{
+                width: '90%',
+                margin: '0 auto',
+                padding: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '30px',
+            }}>
+                {products.map((product) => (
+                    <StyledCard sx={{
+                        width: 240,
+                    }}
+                        onClick={() => {
+                            setSelectedProduct(product)
+                            console.log(selectedProduct)
+                            handleOpen()
+                        }}>
+                        <CardActionArea sx={{
+                            height: '100%',
+                        }}>
+                            <CardMedia
+                                component="img"
+                                height="140"
+                                image={product.image}
+                                alt={product.name}
+                            />
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div" style={{
+                                    color: '#fff',
+                                    fontFamily: 'Montserrat, sans-serif',
+                                }}>
+                                    {product.name}
+                                </Typography>
 
-            <StyledMain>
-                <h1>Home</h1>
-            </StyledMain>
-
-            <Footer />
+                                <Typography variant="body2" color="text.secondary" style={{
+                                    color: '#F9FAFC',
+                                    fontFamily: 'Montserrat, sans-serif',
+                                    textAlign: 'right',
+                                    marginTop: '10px',
+                                }}>
+                                    preço: R$ {product.price}
+                                </Typography>
+                            </CardContent>
+                        </CardActionArea>
+                    </StyledCard>
+                ))}
+            </Box>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        Text in a modal
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                    </Typography>
+                </Box>
+            </Modal>
         </>
     )
 }
 
-export default Home
+const CssTextField = muiStyled(TextField)({
+    '& label.Mui-focused': {
+        color: '#47A359',
+    },
+    '& .MuiInput-underline:after': {
+        borderBottomColor: '#47A359',
+    },
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: 'rgb(101, 116, 139)',
+        },
+        '&:hover fieldset': {
+            borderColor: 'rgb(101, 116, 139)',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: 'rgb(101, 116, 139)',
+        },
+    },
+});
+
+export default function Home() {
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(true)
+    const [products, setProducts] = useState([])
+    const [categories, setCategories] = useState([])
+    const [selectedCategory, setSelectedCategory] = useState('todas')
+    const [search, setSearch] = useState('')
+    const [filteredProducts, setFilteredProducts] = useState([])
+
+    useEffect(() => {
+        db.collection("categories").get().then((querySnapshot) => {
+            const categories = [];
+
+            querySnapshot.forEach((doc) => {
+                categories.push(doc.data());
+            });
+
+            setCategories(categories);
+        });
+
+        db.collection("products").get().then((querySnapshot) => {
+            const products = [];
+
+            querySnapshot.forEach((doc) => {
+                products.push(doc.data());
+            });
+
+            setProducts(products);
+            setFilteredProducts(products);
+        });
+
+        setLoading(false);
+    }, []);
+
+    const handleChange = (event) => {
+        setSelectedCategory(event.target.value);
+
+        if (event.target.value === 'todas') {
+            setFilteredProducts(products);
+            return;
+        } else {
+            const filteredProducts = products.filter((product) => product.category === event.target.value);
+            setFilteredProducts(filteredProducts);
+        }
+    };
+
+    const handleSearch = (event) => {
+        setSearch(event.target.value);
+
+        if (event.target.value === '') {
+            setFilteredProducts(products);
+            return;
+        } else {
+            const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(event.target.value.toLowerCase()));
+            setFilteredProducts(filteredProducts);
+        }
+    };
+
+    return (
+        <Grid container>
+            <Grid item xs={0} sm={0} md={2} style={{
+                background: `rgb(8, 16, 9)`,
+            }}>
+                <Header username='hulley' userType='shop' profilePicture='teste' page="home" title="Home" />
+            </Grid>
+            <Grid item xs={12} sm={12} md={10}>
+                <Main>
+                    <Box sx={{
+                        width: '100%',
+                        minHeight: '100px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0 32px',
+                    }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                            <Search sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                            <CssTextField label="busca" variant="standard" onChange={handleSearch} />
+                        </Box>
+
+                        <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                    Categoria
+                                </InputLabel>
+                                <NativeSelect
+                                    defaultValue={30}
+                                    inputProps={{
+                                        name: 'categoria',
+                                        id: 'uncontrolled-native',
+                                    }}
+                                    onChange={handleChange}
+                                >
+                                    <option value={'todas'}>Todas</option>
+
+                                    {categories.map((category) => (
+                                        <option value={category.name}>{category.name}</option>
+                                    ))}
+                                </NativeSelect>
+                            </FormControl>
+                        </Box>
+                    </Box>
+                    {loading ?
+                        (<Box sx={{
+                            width: '100%',
+                            margin: 'auto',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            <CircularProgress color="success" />
+                            <p style={{
+                                color: 'rgb(101, 116, 139)',
+                                fontFamily: 'Montserrat, sans-serif',
+                                textAlign: 'center',
+                                marginTop: '10px',
+                            }}>Carregando...</p>
+                        </Box>)
+                        : <Products products={filteredProducts} />}
+                </Main>
+                <Footer />
+            </Grid>
+        </Grid>
+    )
+}
