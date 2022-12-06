@@ -3,12 +3,11 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { House, Clock, Barcode, Storefront, Gauge } from 'phosphor-react';
 import styled from "styled-components";
-
+import { useAuth } from "../../hooks/useAuth";
+import { useState, useEffect } from "react";
+import { db, auth } from "../../lib/firebase";
 
 interface HeaderProps extends React.PropsWithChildren<{}> {
-    username: string;
-    userType: string;
-    profilePicture: string;
     page: string;
     title: string;
 }
@@ -99,10 +98,22 @@ export default function Header(props: HeaderProps) {
     const router = useRouter();
     let page = router.pathname;
     const title = props.title;
+    const { user } = useAuth();
+    const [userLocal, setUserLocal] = useState(null);
 
     if (page.replace('/', '') !== '') {
         page = page.replace('/', '');
     }
+
+    useEffect(() => {
+        if (user) {
+            db.collection('users').doc(user.uid).get().then((doc) => {
+                if (doc.exists) {
+                    setUserLocal(doc.data());
+                }
+            });
+        }
+    }, [user]);
 
     return (
         <>
@@ -152,14 +163,14 @@ export default function Header(props: HeaderProps) {
                         color: '#fff',
                         fontFamily: 'Montserrat, sans-serif',
                         marginBottom: '10px',
-                    }}>Olá, {props.username}</p>
+                    }}>Olá, {userLocal?.name}</p>
 
                     <p style={{
                         fontSize: '1rem',
                         fontWeight: 500,
                         color: 'rgb(149, 149, 150)',
                     }}>
-                        {props.userType === 'shop' ? 'vendedor' : 'comprador'}
+                        {userLocal?.role === 'shop' ? 'vendedor' : 'comprador'}
                     </p>
                 </Box>
             </Box>
@@ -174,7 +185,7 @@ export default function Header(props: HeaderProps) {
 
             <nav>
                 <ul>
-                    <ListItem currentPage={page} userType={props.userType}>
+                    <ListItem currentPage={page} userType={userLocal?.role}>
                         <Link page="/" currentPage={page}>
                             <House size={20} weight="light" />
 
