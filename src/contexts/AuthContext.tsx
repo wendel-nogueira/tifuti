@@ -88,8 +88,6 @@ export const AuthProvider = ({ children }: any) => {
         }
     };
 
-
-    
     const router = useRouter();
 
     firebase.auth().onAuthStateChanged((user) => {

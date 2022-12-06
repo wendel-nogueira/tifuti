@@ -99,7 +99,7 @@ export default function Login() {
                         fontWeight: 400,
                         color: '#192D1D',
                         marginTop: '2rem'
-                    }}>Não tem uma conta? <a href="/register" style={{ color: '#47A359' }}>Cadastre-se</a></p>
+                    }}>Não tem uma conta? Cadastre-se</p>
                 </Grid>
             </Grid>
         </Box>

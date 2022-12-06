@@ -2,11 +2,12 @@ import Footer from '../components/footer/Footer'
 import Header from '../components/header/Header'
 import { useAuth } from '../hooks/useAuth';
 import Main from '../components/main/Main';
-import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Box, CircularProgress, TextField, InputLabel, FormControl, NativeSelect, Modal } from '@mui/material';
+import { Grid, Card, CardActionArea, CardMedia, CardContent, Typography, Box, CircularProgress, TextField, InputLabel, FormControl, NativeSelect, Modal, Divider, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
-import firebase, { db } from "../lib/firebase";
+import firebase, { db, auth } from "../lib/firebase";
 import { styled as muiStyled } from '@mui/material/styles';
 import { Search } from '@mui/icons-material';
+import { useCart } from '../hooks/useCart';
 
 const StyledCard = muiStyled(Card)({
     maxWidth: 240,
@@ -50,6 +51,13 @@ const style = {
     outline: 'none',
 };
 
+const CssButton = muiStyled(Button)({
+    background: '#47A359',
+    '&:hover': {
+        background: '#398748',
+    }
+});
+
 const Products = ({ products }) => {
     const [selectedProduct, setSelectedProduct] = useState(null)
     const [open, setOpen] = useState(false);
@@ -58,6 +66,8 @@ const Products = ({ products }) => {
         setOpen(false);
         setSelectedProduct(null)
     };
+
+    const { addToCart } = useCart()
 
     return (
         <>
@@ -116,12 +126,76 @@ const Products = ({ products }) => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Text in a modal
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                    </Typography>
+                    <h2 id="modal-modal-title" style={{
+                        fontFamily: 'Montserrat, sans-serif',
+                        fontSize: '24px',
+                        fontWeight: 600,
+                        color: '#000',
+                        marginBottom: '20px',
+                    }}>{selectedProduct?.name}</h2>
+
+                    <Divider />
+
+                    <Box style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginTop: '20px',
+                    }}>
+                        <Box style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                        }}>
+                            <img src={selectedProduct?.image} alt={selectedProduct?.name} style={{
+                                width: '100px',
+                                height: '100px',
+                                objectFit: 'contain',
+                            }} />
+                            <Box style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '5px',
+                            }}>
+                                <Typography variant="body2" color="text.secondary" style={{
+                                    color: 'rgb(101, 116, 139)',
+                                    fontFamily: 'Montserrat, sans-serif',
+                                    fontSize: '1rem',
+                                    fontWeight: 400,
+                                }}>
+                                    {selectedProduct?.description}
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    <Box style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '5px',
+                    }}>
+                        <Typography variant="body2" color="text.secondary" style={{
+                            color: 'rgb(101, 116, 139)',
+                            fontFamily: 'Montserrat, sans-serif',
+                            fontSize: '1rem',
+                            fontWeight: 400,
+                            marginTop: '20px',
+                        }}>
+                            preço: R$ {selectedProduct?.price}
+                        </Typography>
+                        <CssButton variant="contained" style={{
+                            marginTop: '20px',
+                            color: '#fff',
+                            fontFamily: 'Montserrat, sans-serif',
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                        }} onClick={() => {
+                            addToCart(selectedProduct)
+                            handleClose()
+                        }}>
+                            Adicionar ao carrinho
+                        </CssButton>
+                    </Box>
                 </Box>
             </Modal>
         </>
@@ -211,10 +285,10 @@ export default function Home() {
             <Grid item xs={0} sm={0} md={2} style={{
                 background: `rgb(8, 16, 9)`,
             }}>
-                <Header username='hulley' userType='shop' profilePicture='teste' page="home" title="Home" />
+                <Header page="home" title="Home" />
             </Grid>
             <Grid item xs={12} sm={12} md={10}>
-                <Main>
+                <Main style={{}}>
                     <Box sx={{
                         width: '100%',
                         minHeight: '100px',
