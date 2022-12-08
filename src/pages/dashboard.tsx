@@ -15,10 +15,10 @@ export default function Dashboard() {
             <Grid item xs={0} sm={0} md={2} style={{ 
                 background: `rgb(8, 16, 9)`,
             }}>
-                <Header username='hulley' userType='shop' profilePicture='teste' page="dashboard" title="Dashboard"/>
+                <Header page="dashboard" title="Dashboard"/>
             </Grid>
             <Grid item xs={12} sm={12} md={10}>
-                <Main>
+                <Main style={{}}>
                     <h1>Dashboard</h1>
                 </Main>
                 <Footer />
