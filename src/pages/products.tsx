@@ -5,7 +5,7 @@ import Main from '../components/main/Main';
 import { Grid, Paper, TableContainer, Table, TableHead, TableRow, TableBody, TableCell, TablePagination, IconButton, Box, Button, Modal, Divider, TextField, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { db, storage } from '../lib/firebase';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, PhotoCamera } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { Add } from '@mui/icons-material';
 import { v4 } from 'uuid';
@@ -355,23 +355,23 @@ export default function Products() {
 
                     db.collection('products').doc(productEdit.productId).update(data).then(() => {
                         loadProducts();
-    
+
                         setAlertInfo({
                             title: 'Produto editado',
                             description: 'O produto foi editado com sucesso.',
                             severity: 'success',
                         });
-    
+
                         handleAlert();
                     }).catch((error) => {
                         console.error('Error updating document: ', error);
-    
+
                         setAlertInfo({
                             title: 'Erro ao editar produto',
                             description: 'Ocorreu um erro ao editar o produto.',
                             severity: 'error',
                         });
-    
+
                         handleAlert();
                     });
                 });
@@ -664,8 +664,7 @@ export default function Products() {
                                             }} />
                                         )
                                     }
-                                    <CssButton variant="contained" component="label">
-                                        Upload
+                                    <CssButton variant="contained">
                                         <input
                                             accept="image/*"
                                             type="file"
@@ -673,7 +672,11 @@ export default function Products() {
                                             onChange={handleFile}
                                             name="image"
                                             required
+                                            id="contained-button-file2"
                                         />
+                                        <label htmlFor="contained-button-file2">
+                                            <PhotoCamera fontSize="medium" />
+                                        </label>
                                     </CssButton>
                                     {
                                         image && (
@@ -802,15 +805,19 @@ export default function Products() {
                                             }} />
                                         )
                                     }
-                                    <CssButton variant="contained" component="label">
-                                        Upload
+                                    <CssButton variant="contained">
                                         <input
                                             accept="image/*"
                                             type="file"
                                             hidden
-                                            onChange={handleFileEdit}
+                                            onChange={handleFile}
                                             name="image"
+                                            required
+                                            id="contained-button-file1"
                                         />
+                                        <label htmlFor="contained-button-file1">
+                                            <PhotoCamera fontSize="medium" />
+                                        </label>
                                     </CssButton>
                                     {
                                         imageEdit && (
